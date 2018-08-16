@@ -1,4 +1,4 @@
-package gltutorial.afpro.net.gltutorial
+package net.afpro.gltutorial
 
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
