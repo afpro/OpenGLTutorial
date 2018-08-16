@@ -47,7 +47,7 @@ class Simple : SamplePart {
         val colorAry = floatArrayOf(
                 1f, 0f, 0f, 1f,
                 0f, 1f, 0f, 1f,
-                0f, 0f, 1f, 0f)
+                0f, 0f, 1f, 1f)
 
         pos = ByteBuffer
                 .allocateDirect(posAry.size * 4)
