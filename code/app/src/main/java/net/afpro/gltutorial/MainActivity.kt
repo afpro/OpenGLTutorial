@@ -1,14 +1,16 @@
 package net.afpro.gltutorial
 
-import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.microedition.khronos.egl.EGLConfig
-import javax.microedition.khronos.opengles.GL10
+import net.afpro.gltutorial.sample.SampleRenderer
 
-class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
+class MainActivity : AppCompatActivity() {
+    private val renderer = SampleRenderer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,20 +18,27 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
         glPanel.setEGLContextClientVersion(2)
         glPanel.setEGLConfigChooser(8, 8, 8, 8, 16, 0)
-        glPanel.setRenderer(this)
+        glPanel.setRenderer(renderer)
         glPanel.renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
-    }
 
-    override fun onDrawFrame(ignored: GL10?) {
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-    }
+        val itemNames = Array(renderer.all.size + 1) { "" }
+        itemNames[0] = "SELECT ONE"
+        (1..renderer.all.size).forEach {
+            itemNames[it] = renderer.all[it - 1].name
+        }
 
-    override fun onSurfaceChanged(ignored: GL10?, width: Int, height: Int) {
-        glViewport(0, 0, width, height)
-    }
+        sampleChooser.adapter = ArrayAdapter<String>(this,
+                R.layout.spinner_item, R.id.spinner_item_text,
+                itemNames)
 
-    override fun onSurfaceCreated(ignored: GL10?, config: EGLConfig?) {
-        glClearColor(0.3f, 0.6f, 0.9f, 1f)
-        glClearDepthf(1f)
+        sampleChooser.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(ignoredView: AdapterView<*>?) {
+                renderer.currentPart = null
+            }
+
+            override fun onItemSelected(ignoredView: AdapterView<*>?, itemView: View?, pos: Int, id: Long) {
+                renderer.currentPart = if (pos == 0) null else renderer.all[pos - 1]
+            }
+        }
     }
 }
