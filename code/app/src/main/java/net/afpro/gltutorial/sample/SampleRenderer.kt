@@ -2,6 +2,7 @@ package net.afpro.gltutorial.sample
 
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import net.afpro.gltutorial.Timer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -9,11 +10,14 @@ import javax.microedition.khronos.opengles.GL10
 class SampleRenderer : GLSurfaceView.Renderer {
     private var part: SamplePart? = null
     var currentPart: SamplePart? = null
+    var lastTime: Float = Timer.time
 
     val all = listOf(
-            Simple())
+            Simple(),
+            Animated())
 
     override fun onDrawFrame(ignoredGL10: GL10) {
+        Timer.advance()
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
         val current = currentPart
         if (part !== current) {
@@ -21,7 +25,8 @@ class SampleRenderer : GLSurfaceView.Renderer {
             current?.setup()
             part = current
         }
-        current?.draw()
+        current?.draw(Timer.time - lastTime)
+        lastTime = Timer.time
     }
 
     override fun onSurfaceChanged(ignoredGL10: GL10, width: Int, height: Int) {
