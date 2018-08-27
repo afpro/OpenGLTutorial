@@ -8,6 +8,7 @@ import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
+import kotlin.math.abs
 
 class GLErrorGuard {
     private var hasFinalizer = false
@@ -152,7 +153,7 @@ class Vec(val data: FloatArray = floatArrayOf(0f, 0f, 0f, 1f), val offset: Int =
         }
 
     fun normalize(): Vec {
-        if (w > 1e6 && w < -1e6) {
+        if (abs(w) > 1e-6) {
             x /= w
             y /= w
             z /= w
